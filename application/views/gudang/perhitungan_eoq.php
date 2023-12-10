@@ -22,7 +22,7 @@
                         <div class="col-md-2">
                             <select class="form-select" name="id_barang">
                                 <option value=""></option>
-
+                                <option value="all">Semua</option>
                                 <?php
                                 foreach ($data_barang->result() as $dt) {
                                 ?>
@@ -59,9 +59,9 @@
                             <th>No</th>
                             <th>Kode Barang</th>
                             <th>Nama Barang</th>
-                            <th>Pemakaian</th>
-                            <th>Biaya Pemesanan</th>
-                            <th>Biaya Penyimpanan</th>
+                            <th>Pemakaian (D)</th>
+                            <th>Biaya Pemesanan (S)</th>
+                            <th>Biaya Penyimpanan (H)</th>
                             <th>Hasil EOQ</th>
                         </tr>
                     </thead>
@@ -71,21 +71,48 @@
                             $id = $this->input->post('id_barang');
                             $periode1 = $this->input->post('periode1');
                             $periode2 = $this->input->post('periode2');
-                            $getPemakaian = $this->M_gudang->getPemakaian($id, $periode1, $periode2)->result();
-                            $no = 1;
-                            foreach ($getPemakaian as $dt) {
-                                $getBarang = $this->M_gudang->getWhere('tbl_barang', array('id_barang' => $dt->id_barang))->row();
+                            if ($id == "all") {
+                                $getPemakaian = $this->M_gudang->getPemakaian($periode1, $periode2)->result();
+                                $no = 1;
+                                foreach ($getPemakaian as $dt) {
+                                    $getBarang = $this->M_gudang->getWhere('tbl_barang', array('id_barang' => $dt->id_barang))->row();
+                                    $d = $dt->total;
+                                    $s = 10000;
+                                    $h = 2000;
+                                    $eoq = 2 * $d * $s / $h;
                         ?>
-                                <tr>
-                                    <td><?= $no++ ?></td>
-                                    <td><?= $dt->id_barang ?></td>
-                                    <td><?= $getBarang->nm_barang ?></td>
-                                    <td><?= $dt->total ?></td>
-                                    <td><?= $dt->total ?></td>
-                                    <td><?= $dt->total ?></td>
-                                    <td><?= $dt->total ?></td>
-                                </tr>
+                                    <tr>
+                                        <td><?= $no++ ?></td>
+                                        <td><?= $dt->id_barang ?></td>
+                                        <td><?= $getBarang->nm_barang ?></td>
+                                        <td><?= $d ?></td>
+                                        <td>Rp. <?= $s ?></td>
+                                        <td>Rp. <?= $h ?></td>
+                                        <td><?= $eoq ?></td>
+                                    </tr>
+                                <?php
+                                }
+                            } else {
+                                $getPemakaian = $this->M_gudang->getPemakaian2($id, $periode1, $periode2)->result();
+                                $no = 1;
+                                foreach ($getPemakaian as $dt) {
+                                    $getBarang = $this->M_gudang->getWhere('tbl_barang', array('id_barang' => $dt->id_barang))->row();
+                                    $d = $dt->total;
+                                    $s = 10000;
+                                    $h = 2000;
+                                    $eoq = 2 * $d * $s / $h;
+                                ?>
+                                    <tr>
+                                        <td><?= $no++ ?></td>
+                                        <td><?= $dt->id_barang ?></td>
+                                        <td><?= $getBarang->nm_barang ?></td>
+                                        <td><?= $d ?></td>
+                                        <td>Rp. <?= $s ?></td>
+                                        <td>Rp. <?= $h ?></td>
+                                        <td><?= $eoq ?></td>
+                                    </tr>
                         <?php
+                                }
                             }
                         }
                         ?>

@@ -53,8 +53,13 @@ class M_gudang extends CI_Model
         $this->db->delete($table);
     }
 
-    function getPemakaian($id, $periode1, $periode2)
+    function getPemakaian($periode1, $periode2)
     {
-        return $this->db->query("SELECT id_barang, SUM(qty) as total FROM tbl_pemakaian WHERE id_barang='$id' AND tanggal BETWEEN '$periode1' AND '$periode2'");
+        return $this->db->query("SELECT id_barang, SUM(qty) as total FROM tbl_pemakaian WHERE tanggal BETWEEN '$periode1' AND '$periode2' GROUP BY id_barang");
+    }
+
+    function getPemakaian2($id, $periode1, $periode2)
+    {
+        return $this->db->query("SELECT id_barang, SUM(qty) as total FROM tbl_pemakaian WHERE id_barang='$id' AND tanggal BETWEEN '$periode1' AND '$periode2' GROUP BY id_barang");
     }
 }

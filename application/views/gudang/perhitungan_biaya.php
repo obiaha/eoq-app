@@ -22,7 +22,7 @@
                         <div class="col-md-2">
                             <select class="form-select" name="id_barang">
                                 <option value=""></option>
-
+                                <option value="all">Semua</option>
                                 <?php
                                 foreach ($data_barang->result() as $dt) {
                                 ?>
@@ -70,19 +70,52 @@
                             $id = $this->input->post('id_barang');
                             $periode1 = $this->input->post('periode1');
                             $periode2 = $this->input->post('periode2');
-                            $getPemakaian = $this->M_gudang->getPemakaian($id, $periode1, $periode2)->result();
-                            $no = 1;
-                            foreach ($getPemakaian as $dt) {
-                                $getBarang = $this->M_gudang->getWhere('tbl_barang', array('id_barang' => $dt->id_barang))->row();
+                            if ($id == "all") {
+                                $getPemakaian = $this->M_gudang->getPemakaian($periode1, $periode2)->result();
+                                $no = 1;
+                                foreach ($getPemakaian as $dt) {
+                                    $getBarang = $this->M_gudang->getWhere('tbl_barang', array('id_barang' => $dt->id_barang))->row();
+                                    $d = $dt->total;
+                                    $s = 10000;
+                                    $h = 2000;
+                                    $q = 2 * $d * $s / $h;
+                                    $tc = ($h * $q / 2) + ($s * $d / $q);
+                                    $freq = $d / $q;
+                                    $durasi = 30 / $freq;
                         ?>
-                                <tr>
-                                    <td><?= $no++ ?></td>
-                                    <td><?= $dt->id_barang ?></td>
-                                    <td><?= $getBarang->nm_barang ?></td>
-                                    <td><?= $dt->total ?></td>
-                                    <td><?= $dt->total ?></td>
-                                </tr>
+                                    <tr>
+                                        <td><?= $no++ ?></td>
+                                        <td><?= $dt->id_barang ?></td>
+                                        <td><?= $getBarang->nm_barang ?></td>
+                                        <td><?= $tc ?></td>
+                                        <td><?= $freq ?></td>
+                                        <td><?= $durasi ?></td>
+                                    </tr>
+                                <?php
+                                }
+                            } else {
+                                $getPemakaian = $this->M_gudang->getPemakaian2($id, $periode1, $periode2)->result();
+                                $no = 1;
+                                foreach ($getPemakaian as $dt) {
+                                    $getBarang = $this->M_gudang->getWhere('tbl_barang', array('id_barang' => $dt->id_barang))->row();
+                                    $d = $dt->total;
+                                    $s = 10000;
+                                    $h = 2000;
+                                    $q = 2 * $d * $s / $h;
+                                    $tc = ($h * $q / 2) + ($s * $d / $q);
+                                    $freq = $d / $q;
+                                    $durasi = 30 / $freq;
+                                ?>
+                                    <tr>
+                                        <td><?= $no++ ?></td>
+                                        <td><?= $dt->id_barang ?></td>
+                                        <td><?= $getBarang->nm_barang ?></td>
+                                        <td><?= $tc ?></td>
+                                        <td><?= $freq ?></td>
+                                        <td><?= $durasi ?></td>
+                                    </tr>
                         <?php
+                                }
                             }
                         }
                         ?>
