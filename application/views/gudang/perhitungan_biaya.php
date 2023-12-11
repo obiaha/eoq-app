@@ -53,7 +53,7 @@
                     </div>
                 </form>
                 <hr>
-                <table class='table table-striped' id="tableEoq">
+                <table class='table table-striped' id="tableBiaya">
                     <thead>
                         <tr>
                             <th>No</th>
@@ -126,7 +126,7 @@
     </section>
 </div>
 <script>
-    new DataTable('#tableEoq', {
+    new DataTable('#tableBiaya', {
         autoWidth: false,
         scrollX: true
     });
